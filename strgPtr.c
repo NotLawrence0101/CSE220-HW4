@@ -66,7 +66,37 @@ int strgDiff(const char *s1, const char *s2) {
     (void)s1;
     (void)s2;
     /* TODO */
-    return 0;
+    if(s1 == NULL || s2 == NULL){
+        return -2;
+    }
+
+    int len1 = strgLen(s1);
+    int len2 = strgLen(s2);
+    int max;
+    int isEqual = 0;
+
+    if(len1 > len2){
+        max = len2;
+    }
+    else if(len1 < len2){
+        max = len1;
+    }
+    else{
+        isEqual = 1;
+        max = len1;
+    }
+    
+    for(int i = 0; i < max; i++){
+        if(*s1 != *s2){
+            return i;
+        }
+        s1++;
+        s2++;
+    }
+    if(isEqual){
+        return -1;
+    }
+    return max;
 }
 
 void strgInterleave(const char *s1, const char *s2, char *d, size_t size) {
