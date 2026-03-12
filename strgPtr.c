@@ -151,6 +151,43 @@ void strgInterleave(const char *s1, const char *s2, char *d, size_t size) {
 }
 
 void strgReverseLetters(char *s) {
-    (void)s;
-    /* TODO */
+    (void) s;
+
+    // Accounts for s being NULL
+    if (s == NULL) {
+        return;
+    }
+
+    int len = strgLen(s);
+
+    // Accounts for length being 1 or less than, because reversing results in the same
+    if (len <= 1) {
+        return;
+    }
+
+    // Assign two left and right pointers for the string
+    char *left = s;
+    char *right = s + len - 1;
+
+    while(left < right) {
+        // Move left pointer to next letter if it is not a letter and there is enough space
+        while(left < right && !((*left >= 'a' && *left <= 'z') || (*left >= 'A' && *left <= 'Z'))) {
+            left++;
+        }
+
+        // Move right pointer to previous letter if it is not a letter and there is enough space
+        while(left < right && !((*right >= 'a' && *right <= 'z') || (*right >= 'A' && *right <= 'Z'))) {
+            right--;
+        }
+
+        // Swap letters if right is greater than left
+        if (left < right) {
+            char temp = *left;
+            *left = *right;
+            *right = temp;
+
+            left++;
+            right--;
+        }
+    }
 }

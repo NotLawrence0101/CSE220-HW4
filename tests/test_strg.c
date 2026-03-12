@@ -154,5 +154,15 @@ Test(strgInterleave, studentTest){
 }
 
 Test(strgReverseLetters, studentTest){
-    
+    char a[] = "Test";
+    strgReverseLetters(a);
+    cr_expect_str_eq(a, "tseT");
+
+    char b[] = "W0ah";
+    strgReverseLetters(b);
+    cr_expect_str_eq(b, "h0aW");
+
+    char c[] = "";
+    strgReverseLetters(c);
+    cr_expect_str_eq(c, "");
 }
