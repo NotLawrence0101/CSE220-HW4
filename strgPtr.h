@@ -1,3 +1,6 @@
+// Name: Lawrence Wong
+// Student ID: 116408194
+
 #ifndef STRGPTR_H
 #define STRGPTR_H
 #include <stddef.h>

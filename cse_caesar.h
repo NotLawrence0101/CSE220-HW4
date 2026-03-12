@@ -1,3 +1,6 @@
+// Name: Lawrence Wong
+// Student ID: 116408194
+
 #ifndef CSE_CAESAR_H
 #define CSE_CAESAR_H
 

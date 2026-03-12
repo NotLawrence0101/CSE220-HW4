@@ -1,3 +1,6 @@
+// Name: Lawrence Wong
+// Student ID: 116408194
+
 #include "cse_caesar.h"
 #include "strgPtr.h"
 /* DO NOT use <string.h> or <ctype.h> */
