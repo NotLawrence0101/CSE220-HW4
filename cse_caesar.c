@@ -15,10 +15,11 @@ int encryptCaesar(const char *plaintext, char *ciphertext, int key) {
         return -2;
     }
 
+    // Initialize lengths of inputted strings
     int pLen = strgLen(plaintext);
     int max = strgLen(ciphertext);
 
-    // Check if there is space for "__EOM__"
+    // Check if there is space for the EOM marker
     if (pLen + 7 > max) {
         return -1;
     }
@@ -26,22 +27,22 @@ int encryptCaesar(const char *plaintext, char *ciphertext, int key) {
     int i = 0;
 
     while (plaintext[i] != '\0') {
-
         // Initialize the letter and 
         char c = plaintext[i];
         int shift = key + i;
 
-        // Checks for if the letter is a lower or upper case letter and shifts the letter accordingly or keeps the same char if not a letter
-        if (c >= 'a' && c <= 'z') {
+        if(c >= 'a' && c <= 'z'){ // Checks for if the letter is a lower case and shifts accordingly
             ciphertext[i] = ((c - 'a' + shift) % 26) + 'a';
         }
-        else if (c >= 'A' && c <= 'Z') {
+        else if(c >= 'A' && c <= 'Z'){ // Shifts capital letters accordingly
             ciphertext[i] = ((c - 'A' + shift) % 26) + 'A';
         }
-        else {
+        else if(c >= '0' && c <= '9'){ // Shifts numbers accordingly
+            ciphertext[i] = ((c - '0' + shift) % 10) + '0';
+        }
+        else{ // Keeps all other characters that are not letters or numbers
             ciphertext[i] = c;
         }
-
         i++;
     }
 
@@ -61,66 +62,78 @@ int encryptCaesar(const char *plaintext, char *ciphertext, int key) {
 }
 
 int decryptCaesar(const char *ciphertext, char *plaintext, int key) {
-    (void)ciphertext;
-    (void)plaintext;
-    (void)key;
+    (void) ciphertext;
+    (void) plaintext;
+    (void) key;
+
+    // Accounts for NULL inputs
     if(ciphertext == NULL || plaintext == NULL){
         return -2;
     }
 
     int capacity = strgLen(plaintext);
 
+    // Accounts for empty string
     if(capacity == 0){
         return 0;
     }
 
-    // Find the EOM marker of the string and store the index
+    // Find the EOM marker if there is one and notes the index of it
     int eomIndex = -1;
     for(int i = 0; ciphertext[i] != '\0'; i++){
-        if(ciphertext[i] == '_' &&
-           ciphertext[i+1] == '_' &&
-           ciphertext[i+2] == 'E' &&
-           ciphertext[i+3] == 'O' &&
-           ciphertext[i+4] == 'M' &&
-           ciphertext[i+5] == '_' &&
-           ciphertext[i+6] == '_'){
+        if(ciphertext[i]=='_' && ciphertext[i+1]=='_' &&
+           ciphertext[i+2]=='E' && ciphertext[i+3]=='O' &&
+           ciphertext[i+4]=='M' && ciphertext[i+5]=='_' &&
+           ciphertext[i+6]=='_'){
             eomIndex = i;
             break;
         }
     }
 
-    // Accounts for if there is no EOM marker in the string and returns -1
+    // Accounts for no EOM marker in the string
     if(eomIndex == -1){
         return -1;
     }
-    
-    int decodedCount = 0;
-    int limit = capacity - 1;
 
-    for(int i = 0; i < eomIndex && i < limit; i++){
+    int decoded = 0;
+    int i = 0;
 
+    // Itterates until EOM marker and at the end of the string
+    while(i < eomIndex && i < capacity - 1){
         char c = ciphertext[i];
         int shift = key + i;
 
-        if(c >= 'a' && c <= 'z'){
+        if(c >= 'a' && c <= 'z'){ // Decodes the characters that are lower case
             int val = (c - 'a' - shift) % 26;
-            if(val < 0) val += 26;
+            if(val < 0){
+                val += 26;
+            }
             plaintext[i] = val + 'a';
-            decodedCount++;
+            decoded++;
         }
-        else if(c >= 'A' && c <= 'Z'){
+        else if(c >= 'A' && c <= 'Z'){ // Decodes the characters that are upper case
             int val = (c - 'A' - shift) % 26;
-            if(val < 0) val += 26;
+            if(val < 0){ 
+                val += 26;
+            }
             plaintext[i] = val + 'A';
-            decodedCount++;
+            decoded++;
+        }
+        else if(c >= '0' && c <= '9'){ // Decodes the characters that are numbers
+            int val = (c - '0' - shift) % 10;
+            if(val < 0){ 
+                val += 10;
+            }
+            plaintext[i] = val + '0';
+            decoded++;
         }
         else{
             plaintext[i] = c;
         }
+        i++;
     }
 
-    int end = (eomIndex < limit) ? eomIndex : limit;
-    plaintext[end] = '\0';
+    plaintext[i] = '\0';
 
-    return decodedCount;
+    return decoded;
 }
