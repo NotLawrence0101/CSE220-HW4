@@ -26,11 +26,18 @@ Test(encryptCaesar, encryptCaesar_TooSmall_Test) {
     cr_expect_str_eq(buf, "xxxxxxxx");
 }
 
-Test(encryptCaesar, encryptCaesar_TooSmall_Test) {
-    char buf[8] = "xxxxxxxx";
-    int r = encryptCaesar("hello", buf, 8);
-    cr_expect_eq(r, -1);
-    cr_expect_str_eq(buf, "xxxxxxxx");
+Test(encryptCaesar, encryptCaesar_Undefined_Test) {
+    char buf[32] = "xxxxxxxxxxxxxxxxxxxxxxxx";
+    int r = encryptCaesar("", buf, 10);
+    cr_expect_eq(r, 0);
+    cr_expect_str_eq(buf, "undefined__EOM__");
+}
+
+Test(encryptCaesar, encryptCaesar_Numbers_Test) {
+    char buf[32] = "xxxxxxxxxxxxxxxxxxxxxxxx";
+    int r = encryptCaesar("07734", buf, 2);
+    cr_expect_eq(r, 5);
+    cr_expect_str_eq(buf, "20180__EOM__");
 }
 
 // decryptCaesar test cases
@@ -53,4 +60,18 @@ Test(decryptCaesar, decryptCaesar_NoEOMMarker_Test) {
     int r = decryptCaesar("jhpqu", buf, 2);
     cr_expect_eq(r, -1);
     cr_expect_str_eq(buf, "xxxxxxxx");
+}
+
+Test(decryptCaesar, decryptCaesar_Undefined_Test) {
+    char buf[32] = "xxxxxxxxxxxxxxxxxxxxxxxx";
+    int r = decryptCaesar("undefined__EOM__", buf, 2);
+    cr_expect_eq(r, 0);
+    cr_expect_str_eq(buf, "undefined");
+}
+
+Test(decryptCaesar, decryptCaesar_Numbers_Test) {
+    char buf[32] = "xxxxxxxxxxxxxxxxxxxxxxxx";
+    int r = decryptCaesar("20180__EOM__", buf, 2);
+    cr_expect_eq(r, 5);
+    cr_expect_str_eq(buf, "07734");
 }

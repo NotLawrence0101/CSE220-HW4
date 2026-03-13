@@ -17,17 +17,30 @@ int encryptCaesar(const char *plaintext, char *ciphertext, int key) {
 
     // Initialize lengths of inputted strings
     int pLen = strgLen(plaintext);
-    int max = strgLen(ciphertext);
+
+    // Accounts for if the plaintext is empty
+    if (pLen == 0) {
+        // Makes ciphertext read "undefined__EOM__" 
+        int i = 0;
+        char *temp = "undefined__EOM__";
+
+        while (temp[i] != '\0') {
+            ciphertext[i] = temp[i];
+            i++;
+        }
+        ciphertext[i] = '\0';
+        return 0;
+    }
 
     // Check if there is space for the EOM marker
-    if (pLen + 7 > max) {
+    if (pLen + 7 > strgLen(ciphertext)) {
         return -1;
     }
 
     int i = 0;
 
     while (plaintext[i] != '\0') {
-        // Initialize the letter and 
+        // Initialize the index plaintext letter
         char c = plaintext[i];
         int shift = key + i;
 
@@ -82,9 +95,27 @@ int decryptCaesar(const char *ciphertext, char *plaintext, int key) {
     int eomIndex = -1;
     for(int i = 0; ciphertext[i] != '\0'; i++){
         if(ciphertext[i]=='_' && ciphertext[i+1]=='_' &&
-           ciphertext[i+2]=='E' && ciphertext[i+3]=='O' &&
-           ciphertext[i+4]=='M' && ciphertext[i+5]=='_' &&
-           ciphertext[i+6]=='_'){
+            ciphertext[i+2]=='E' && ciphertext[i+3]=='O' &&
+            ciphertext[i+4]=='M' && ciphertext[i+5]=='_' &&
+            ciphertext[i+6]=='_'){
+        // Check for undefined__EOM__
+            if(i == 9 &&
+                ciphertext[0]=='u' && ciphertext[1]=='n' &&
+                ciphertext[2]=='d' && ciphertext[3]=='e' &&
+                ciphertext[4]=='f' && ciphertext[5]=='i' &&
+                ciphertext[6]=='n' && ciphertext[7]=='e' &&
+                ciphertext[8]=='d'){
+                    // Makes plaintext read "undefined" 
+                    int j = 0;
+                    char *temp = "undefined";
+
+                    while (temp[j] != '\0'){
+                        plaintext[j] = temp[j];
+                        j++;
+                    }
+                    plaintext[j] = '\0';
+                    return 0;
+            }
             eomIndex = i;
             break;
         }
